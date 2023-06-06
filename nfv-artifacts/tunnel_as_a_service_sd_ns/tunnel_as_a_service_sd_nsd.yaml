@@ -1,0 +1,33 @@
+# @Author: Rafael Direito
+# @Date:   2022-07-18 14:21:37
+# @Last Modified by:   Rafael Direito
+# @Last Modified time: 2022-10-15 20:04:15
+nsd:
+  nsd:
+  - description: NS with 1 VNF containing a WG Peer
+    df:
+    - id: default-df
+      vnf-profile:
+      - id: '1'
+        virtual-link-connectivity:
+        - constituent-cpd-id:
+          - constituent-base-element-id: '1'
+            constituent-cpd-id: tunnel-as-a-service-sd-eth0-ext
+            # ip-address: "10.0.13.253"
+          virtual-link-profile-id: mgmtnet
+        #- constituent-cpd-id:
+        #  - constituent-base-element-id: '1'
+        #    constituent-cpd-id: tunnel-as-a-service-sd-eth1-ext
+        #  virtual-link-profile-id: datanet
+        vnfd-id: tunnel-as-a-service-sd-vnf
+    id: tunnel-as-a-service-sd-ns
+    name: tunnel-as-a-service-sd-ns
+    version: '1.0'
+    virtual-link-desc:
+    - id: mgmtnet
+      mgmt-network: true
+      vim-network-name: new_5gasp
+    #- id: datanet
+    #  vim-network-name: datanet2
+    vnfd-id:
+    - tunnel-as-a-service-sd-vnf

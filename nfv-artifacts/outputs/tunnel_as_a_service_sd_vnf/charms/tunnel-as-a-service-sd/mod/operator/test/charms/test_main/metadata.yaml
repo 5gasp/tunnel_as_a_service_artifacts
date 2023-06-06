@@ -1,0 +1,26 @@
+name: main
+summary: A charm used for testing the basic operation of the entrypoint code.
+maintainer: Dmitrii Shcherbakov <dmitrii.shcherbakov@canonical.com>
+description: A charm used for testing the basic operation of the entrypoint code.
+bases:
+  - name: ubuntu
+    channel: focal
+    architectures:
+      - amd64
+provides:
+    db:
+        interface: db
+requires:
+    mon:
+        interface: monitoring
+peers:
+    ha:
+        interface: cluster
+subordinate: false
+storage:
+    disks:
+        type: block
+        multiple:
+            range: 0-
+containers:
+    test:

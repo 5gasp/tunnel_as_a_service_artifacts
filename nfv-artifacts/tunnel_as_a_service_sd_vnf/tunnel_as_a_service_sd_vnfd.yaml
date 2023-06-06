@@ -1,0 +1,222 @@
+# @Author: Rafael Direito
+# @Date:   2022-07-18 14:21:37
+# @Last Modified by:   Daniel Gomes
+# @Last Modified time: 2022-11-16 16:17:21
+vnfd:
+  description: A VNF with 1 VDU able to connect with peers from different domains
+  df:
+  - id: default-df
+    instantiation-level:
+    - id: default-instantiation-level
+      vdu-level:
+      - number-of-instances: 1
+        vdu-id: tunnel-as-a-service-sd
+    vdu-profile:
+    - id: tunnel-as-a-service-sd
+      min-number-of-instances: 1
+    lcm-operations-configuration:
+      operate-vnf-op-config:
+        day1-2:
+        - id: tunnel-as-a-service-sd-vnf
+          config-access:
+            ssh-access:
+              default-user: ubuntu
+              required: false
+          execution-environment-list:
+          - id: configure-vnf
+            external-connection-point-ref: tunnel-as-a-service-sd-eth0-ext
+            juju:
+              charm: tunnel-as-a-service-sd
+          initial-config-primitive:
+          - execution-environment-ref: configure-vnf
+            name: config
+            parameter:
+            - name: ssh-hostname
+              value: <rw_mgmt_ip>
+            - name: ssh-username
+              value: <ssh_username>
+            - name: ssh-password
+              value: <ssh_password>
+            - name: tunnel_address
+              value: <tunnel_address>
+            - name: tunnel_peer_address
+              value: <tunnel_peer_address>
+            - name: tunnel_id
+              value: <tunnel_id>
+            - name: vsi_id
+              value: <vsi_id>
+            - name: use_data_interfaces
+              value: <use_data_interfaces>
+            - name: netor_ip
+              value: <netor_ip>
+            - name: domain
+              value: <domain>
+            - name: dns_ip
+              value: <dns_ip>
+            - name: dns_port
+              value: <dns_port>
+            - name: dns_api_port
+              value: <dns_api_port>
+            - name: dns_api_key
+              value: <dns_api_key>
+            - name: dns_encryption_key
+              value: <dns_encryption_key>
+            - name: dns_zone
+              value: <dns_zone>
+            - name: dns_total_num_peers
+              value: <dns_total_num_peers>
+            - name: dns_service_type
+              value: <dns_service_type>
+            - name: dns_protocol
+              value: <dns_protocol>
+            - name: tunnel_public_address
+              value: <tunnel_public_address>
+            - name: tunnel_public_port
+              value: <tunnel_public_port>
+            - name: tunnel_allowed_networks
+              value: <tunnel_allowed_networks>
+            - name: max_waiting_time_for_other_peers_secs
+              value: <max_waiting_time_for_other_peers_secs>
+            
+            seq: '1'
+          config-primitive:
+
+          - name: get-wireguard-base-info
+            execution-environment-ref: configure-vnf
+
+          - name: add-peer
+            execution-environment-ref: configure-vnf
+            parameter:
+            - data-type: STRING
+              name: peer_endpoint
+            - data-type: STRING
+              name: peer_public_key
+            - data-type: STRING
+              name: allowed_networks
+              mandatory: false
+              default-value: "null"
+
+          - name: get-vnf-ip
+            execution-environment-ref: configure-vnf
+
+          - name: ip-route-management
+            execution-environment-ref: configure-vnf
+            parameter:
+            - data-type: STRING
+              name: network
+            - data-type: STRING
+              name: gw_address
+            - data-type: STRING
+              name: action
+
+          - name: get-peers
+            execution-environment-ref: configure-vnf
+            parameter:
+            - data-type: STRING
+              name: peer_public_key
+              mandatory: false
+              default-value: "null"
+            - data-type: STRING
+              name: peer_endpoint_ip
+              mandatory: false
+              default-value: "null"
+
+          - name: update-peer-endpoint
+            execution-environment-ref: configure-vnf
+            parameter:
+            - data-type: STRING
+              name: new_endpoint
+            - data-type: STRING
+              name: peer_public_key
+              mandatory: false
+              default-value: "null"
+            - data-type: STRING
+              name: peer_endpoint_ip
+              mandatory: false
+              default-value: "null"
+
+          - name: update-wg-ip
+            execution-environment-ref: configure-vnf
+            parameter:
+            - data-type: STRING
+              name: wg_new_ip
+     
+
+          - name: update-peer-allowed-ips
+            execution-environment-ref: configure-vnf
+            parameter:
+            - data-type: STRING
+              name: network
+            - data-type: STRING
+              name: action
+            - data-type: STRING
+              name: peer_public_key
+              mandatory: false
+              default-value: "null"
+            - data-type: STRING
+              name: peer_endpoint_ip
+              mandatory: false
+              default-value: "null"
+
+          - name: delete-peer
+            execution-environment-ref: configure-vnf
+            parameter:
+            - data-type: STRING
+              name: peer_public_key
+              mandatory: false
+              default-value: "null"
+            - data-type: STRING
+              name: peer_endpoint_ip
+              mandatory: false
+              default-value: "null"
+
+          - name: get-ip-routes
+            execution-environment-ref: configure-vnf
+
+  ext-cpd:
+  - id: tunnel-as-a-service-sd-eth0-ext  
+    int-cpd:
+      cpd: tunnel-as-a-service-sd-eth0-int
+      vdu-id: tunnel-as-a-service-sd
+  - id: tunnel-as-a-service-sd-eth1-ext
+    int-cpd:
+      cpd: tunnel-as-a-service-sd-eth1-int
+      vdu-id: tunnel-as-a-service-sd
+  id: tunnel-as-a-service-sd-vnf
+  product-name: tunnel-as-a-service-sd-vnf
+  mgmt-cp: tunnel-as-a-service-sd-eth0-ext
+  sw-image-desc:
+  - id: "ubuntu-20.04-server-cloudimg-amd64"
+    image: "ubuntu-20.04-server-cloudimg-amd64"
+    name: "ubuntu-20.04-server-cloudimg-amd64"
+  vdu:
+  - cloud-init-file: cloud-init
+    id: tunnel-as-a-service-sd
+    name: tunnel-as-a-service-sd
+    int-cpd:
+    - id: tunnel-as-a-service-sd-eth0-int
+      virtual-network-interface-requirement:
+      - name: eth0
+        support-mandatory: true
+        virtual-interface:
+          type: PARAVIRT
+    - id: tunnel-as-a-service-sd-eth1-int
+      virtual-network-interface-requirement:
+      - name: eth1
+        support-mandatory: true
+        virtual-interface:
+          type: PARAVIRT
+    sw-image-desc: "ubuntu-20.04-server-cloudimg-amd64"
+    virtual-compute-desc: tunnel-as-a-service-sd-compute
+    virtual-storage-desc:
+    - tunnel-as-a-service-sd-storage
+  version: '1.0'
+  virtual-compute-desc:
+  - id: tunnel-as-a-service-sd-compute
+    virtual-cpu:
+      num-virtual-cpu: 1
+    virtual-memory:
+      size: 1.0
+  virtual-storage-desc:
+  - id: tunnel-as-a-service-sd-storage
+    size-of-storage: 10

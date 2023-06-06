@@ -1,0 +1,10 @@
+[Unit]
+Description=Active Monitoring Systemd Service
+
+[Service]
+ExecStart=/usr/bin/python3 /home/ubuntu/aux_files/activemon_daemon.py
+User=root
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

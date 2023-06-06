@@ -1,0 +1,6 @@
+#cloud-config
+password: password
+chpasswd: { expire: False }
+ssh_pwauth: True
+runcmd:
+  - sudo ip route del default via 200.0.12.1

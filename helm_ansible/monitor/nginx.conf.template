@@ -1,0 +1,26 @@
+events {
+
+}
+
+http {
+    upstream prometheus {
+        server ${sshhostname}:9000; # If query contains "custom_metric"
+        server ${sshhostname}:9100; # Otherwise
+    }
+
+    server {
+        listen 80;
+        server_name localhost;
+
+        location / {
+            proxy_pass http://prometheus;
+            proxy_set_header Host ${DOLLAR}host;
+            proxy_set_header X-Real-IP ${DOLLAR}remote_addr;
+            proxy_set_header X-Forwarded-For ${DOLLAR}proxy_add_x_forwarded_for;
+
+            if (${DOLLAR}request_uri ~* "custom_metric") {
+                proxy_pass http://${sshhostname}:9000;
+            }
+        }
+    }
+}

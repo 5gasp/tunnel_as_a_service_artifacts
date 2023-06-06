@@ -1,0 +1,16 @@
+# @Author: Daniel Gomes
+# @Date:   2023-02-16 16:12:07
+# @Last Modified by:   Daniel Gomes
+# @Last Modified time: 2023-02-16 16:13:41
+nst:
+-   SNSSAI-identifier:
+        slice-service-type: eMBB
+    id: tunnel-as-a-service-sd-nst
+    name: tunnel-as-a-service-sd-nst
+    netslice-subnet:
+    -   description: NetSlice Subnet (service) composed by 1 vnf with 2 cp
+        id: tunnel-as-a-service-sd-tunnel-peer
+        is-shared-nss: false
+        nsd-ref: tunnel-as-a-service-sd-ns
+    quality-of-service:
+        id: 1

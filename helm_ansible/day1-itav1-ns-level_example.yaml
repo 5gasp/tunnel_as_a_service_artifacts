@@ -1,0 +1,122 @@
+# @Author: Daniel Gomes
+# @Date:   2023-02-16 11:01:51
+# @Last Modified by:   Daniel Gomes
+# @Last Modified time: 2023-02-16 16:19:22
+
+
+
+vld:
+- name: mgmtnet
+  vim-network-name: new_5gasp
+  vnfd-connection-point-ref:
+  - member-vnf-index-ref: '1'
+    vnfd-connection-point-ref: 'tunnel-as-a-service-sd-eth0-ext'
+    ip-address: 'x.x.x.x'
+- name: internal
+  vim-network-name: netor_net_1
+  vnfd-connection-point-ref:
+  - member-vnf-index-ref: '1'
+    vnfd-connection-point-ref: 'tunnel-as-a-service-sd-eth1-ext'
+    ip-address: '200.0.11.1'
+additionalParamsForVnf:
+  - member-vnf-index: '1'
+    additionalParams:
+      use_data_interfaces: 'true'
+      tunnel_id: 'wg1'
+      tunnel_peer_address: '10.10.1.1'
+      tunnel_address: '200.0.11.0/24'
+      netor_ip: 'netor.5gasp.eu'
+      vsi_id: '1'
+      domain: "itav"
+      dns_ip: 'x.x.x.x'
+      dns_port: '9000'
+      dns_api_port: '8081'
+      dns_api_key: 'secret'
+      dns_encryption_key: 'dummy_key='
+      dns_zone: 'vsi-1.netor.'
+      dns_total_num_peers: '3'
+      dns_service_type: 'wireguard'
+      dns_protocol: 'udp'
+      tunnel_public_address: 'y.y.y.y'
+      tunnel_public_port: '51820'
+      tunnel_allowed_networks: '200.0.11.0/24, 10.10.1.0/24'
+      max_waiting_time_for_other_peers_secs: '1200'
+
+---
+vld:
+- name: mgmtnet
+  vim-network-name: new_5gasp
+  vnfd-connection-point-ref:
+  - member-vnf-index-ref: '1'
+    vnfd-connection-point-ref: 'tunnel-as-a-service-sd-eth0-ext'
+    ip-address: 'x.x.x.x'
+- name: internal
+  vim-network-name: netor_net_2
+  vnfd-connection-point-ref:
+  - member-vnf-index-ref: '1'
+    vnfd-connection-point-ref: 'tunnel-as-a-service-sd-eth1-ext'
+    ip-address: '200.0.12.1'
+additionalParamsForVnf:
+  - member-vnf-index: '1'
+    additionalParams:
+      use_data_interfaces: 'true'
+      tunnel_id: 'wg2'
+      tunnel_peer_address: '10.10.2.1'
+      tunnel_address: '200.0.12.0/24'
+      netor_ip: 'netor.5gasp.eu'
+      domain: "itav"
+      vsi_id: '1'
+      dns_ip: 'x.x.x.x'
+      dns_port: '9000'
+      dns_api_port: '8081'
+      dns_api_key: 'secret'
+      dns_encryption_key: 'dummy_key-pHogsI='
+      dns_zone: 'vsi-1.netor.'
+      dns_total_num_peers: '3'
+      dns_service_type: 'wireguard'
+      dns_protocol: 'udp'
+      tunnel_public_address: 'y.y.y.y'
+      tunnel_public_port: '51820'
+      tunnel_allowed_networks: '200.0.12.0/24, 10.10.2.0/24'
+      max_waiting_time_for_other_peers_secs: '1200'
+---
+
+
+vld:
+- name: mgmtnet
+  vim-network-name: new_5gasp
+  vnfd-connection-point-ref:
+  - member-vnf-index-ref: '1'
+    vnfd-connection-point-ref: 'tunnel-as-a-service-sd-eth0-ext'
+    ip-address: 'x.x.x.x'
+- name: internal
+  vim-network-name: netor_net_3
+  vnfd-connection-point-ref:
+  - member-vnf-index-ref: '1'
+    vnfd-connection-point-ref: 'tunnel-as-a-service-sd-eth1-ext'
+    ip-address: '200.0.13.1'
+additionalParamsForVnf:
+  - member-vnf-index: '1'
+    additionalParams:
+      use_data_interfaces: 'true'
+      tunnel_id: 'wg3'
+      tunnel_peer_address: '10.10.3.1'
+      tunnel_address: '200.0.13.0/24'
+      netor_ip: 'netor.5gasp.eu'
+      domain: "itav"
+      vsi_id: '1'
+      dns_ip: 'x.x.x.x'
+      dns_port: '9000'
+      dns_api_port: '8081'
+      dns_api_key: 'secret'
+      dns_encryption_key: 'dummy_key-pHogsI='
+      dns_zone: 'vsi-1.netor.'
+      dns_total_num_peers: '3'
+      dns_service_type: 'wireguard'
+      dns_protocol: 'udp'
+      tunnel_public_address: 'y.y.y.y'
+      tunnel_public_port: '51820'
+      tunnel_allowed_networks: '200.0.13.0/24, 10.10.3.0/24'
+      max_waiting_time_for_other_peers_secs: '1200'
+
+

@@ -1,0 +1,14 @@
+- name: My first play
+  hosts: all
+  become: true
+  vars: 
+    aux_dir: /home/ubuntu/aux_files
+  tasks:
+    - name: Retrieve file contents
+      slurp:
+        src: "{{aux_dir}}/my_address.txt"
+      register: file_contents
+
+    - name: Display file contents
+      debug:
+        msg: "{{ file_contents['content'] | b64decode }}"

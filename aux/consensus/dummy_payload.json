@@ -1,0 +1,20 @@
+{
+    "interface": "wg0",
+
+    "routes": {
+        "VfyqzxQIp4k1LYO1C255Vhq/+/TyEl+gXx2aD9WqMi4=": {
+            "dest_network": "200.0.11.0/24",
+            "gateway": "10.10.3.1",
+            "interface": "wg0"
+        },
+        "ORcIw0pOPXGz7PRRXJJhC6A5Q6XFYye6cVmOV9KSA1k=": {
+            "dest_network": "200.0.11.0/24",
+            "gateway": "10.10.2.1",
+            "interface": "wg0"
+        },
+        "GmL04Ai/5FUHXYm+w3Xz0cdZ1Zk8Ld4N1bxcBkPGFFg=": {
+
+        }
+    }
+
+}

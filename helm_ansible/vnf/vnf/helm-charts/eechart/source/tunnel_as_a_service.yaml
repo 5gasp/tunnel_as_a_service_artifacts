@@ -1,0 +1,186 @@
+# @Author: Daniel Gomes
+# @Date:   2023-02-13 14:07:13
+# @Last Modified by:   Daniel Gomes
+# @Last Modified time: 2023-02-16 14:53:49
+- name: My first play
+  hosts: all
+  become: yes
+  vars: 
+    aux_dir: /home/ubuntu/aux_files
+    priv_key_path: /etc/wireguard/privatekey
+    pub_key_path: /etc/wireguard/publickey
+    WgConfigLocalFilePath: "/tmp/wireguard/wg.conf"
+    WgConfigDestinationDir: "/etc/wireguard"
+    WgConfigLocalDir: "/tmp/wireguard"
+    SystemdDir: "/etc/systemd/system"
+    listen_port: 51820
+    save_config: true
+    forward_interface: "wg0"
+    wg_config_home_dir: "~"
+    api_url: "http://10.255.28.4/tests/timestamp/"
+
+  tasks:
+    - name: Update package database
+      ansible.builtin.apt:
+        update_cache: true
+        force_apt_get: yes
+    - name: Download get-pip.py
+      get_url:
+          url: https://bootstrap.pypa.io/get-pip.py
+          dest: /tmp/get-pip.py
+    - name: Install pip
+      shell: python3 /tmp/get-pip.py
+
+    - name: Ensure auxiliar files directory exists
+      file:
+        path: "{{ aux_dir }}"
+        state: directory
+
+    - name: Synchronize local directory with remote host
+      copy:
+        src: "{{ playbook_dir }}/"
+        dest: "{{ aux_dir }}/"
+    - name: Peer Lifecycle Start
+      uri:
+        url: "{{ api_url }}{{vsi_id}}"
+        method: POST
+        body_format: json
+        status_code: 201
+        body: 
+          domain: "{{ domain }}"
+          action: "LIFECYCLE_START_TS"
+          timestamp: "{{ ansible_date_time.iso8601_micro | regex_replace('Z$', '') | regex_replace('T', ' ') }}"
+  
+    - name: Install Pip Packages
+      ansible.builtin.pip:
+        requirements: "{{ aux_dir }}/requirements.txt"
+        state: present
+  
+    - name: Install Wireguard Packages
+      ansible.builtin.apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+          - wireguard
+          - net-tools
+    - name: Check Wireguard Version
+      shell: wg --version
+
+    - name: Key Pair Generation
+      shell: "wg genkey | sudo tee {{ priv_key_path }} | wg pubkey | sudo tee {{ pub_key_path }}"
+
+    - name: Read the content of wireguard private key
+      command: "cat {{ priv_key_path }}"
+      register: cat_private_key
+
+    - name: Store the output of the private key command as a variable
+      set_fact:
+        wg_pk: "{{ cat_private_key.stdout }}"
+    
+    - name: Write new Wireguard config to file using a script
+      environment:
+        ANSIBLE_JSON: '{{ vars | to_json }}'
+      ansible.builtin.script: 
+        executable: python3
+        cmd: "{{ playbook_dir }}/wg_config_wrapper.py"
+      register: script_output
+    - name: Wireguard Installed
+      uri:
+        url: "{{ api_url }}{{vsi_id}}"
+        method: POST
+        body_format: json
+        status_code: 201
+        body: 
+          domain: "{{ domain }}"
+          action: "WG_INSTALLED_TS"
+          timestamp: "{{ ansible_date_time.iso8601_micro | regex_replace('Z$', '') | regex_replace('T', ' ') }}"
+    - name: debug output
+      ansible.builtin.debug:
+        var: script_output.stdout_lines
+
+    - name: Update Wireguard Config
+      command: "mv {{ WgConfigLocalFilePath }} {{ WgConfigDestinationDir }}/{{ forward_interface}}.conf"
+
+    - name: Allow Ipv4 forwarding
+      shell: sysctl -w net.ipv4.ip_forward=1
+
+    - name: Restart Wireguard Config
+      command: "wg-quick up {{ forward_interface }}"
+
+    - name: Parse wireguard configuration file
+      shell: "cat /etc/wireguard/wg0.conf"
+      register: wg_conf
+    
+    - name: Convert list to dictionary for the wireguard base info
+      set_fact:
+        # split each line of the file on the "=" character and create a dictionary from the resulting key-value pairs
+        wireguard_conf_dict: "{{ wireguard_conf_dict | default({}) | combine({item.split('=')[0].strip() : item.split('=')[1].strip()}) }}"
+      with_items: "{{ wg_conf.stdout_lines }}"
+      when: '"=" in item'
+
+    - name: Read the content of wireguard public key
+      command: "cat {{ pub_key_path }}"
+      register: cat_pub_key
+
+    - name: Store the wireguard base_info in variables
+      set_fact:
+        public_key: "{{ cat_pub_key.stdout }}"
+        address: "wireguard_conf_dict.Address"
+        listen_port: "wireguard_conf_dict.ListenPort"
+      
+    - name: Start DNS-Based Service Discovery using a script
+      environment:
+        ANSIBLE_JSON: '{{ vars | to_json }}'
+      ansible.builtin.script: 
+        executable: python3
+        cmd: "{{ playbook_dir }}/powerdns_peers.py"
+      register: script_output
+
+    - name: debug output
+      ansible.builtin.debug:
+        var: script_output.stdout_lines
+    - name: Update Wireguard Config
+      command: "mv {{ WgConfigLocalDir }}/{{ forward_interface}}.conf {{ WgConfigDestinationDir }}"
+    - name: cat output
+      command: "cat {{  WgConfigDestinationDir }}/{{ forward_interface}}.conf "
+      register: cat_output
+    - name: debug
+      debug:
+        var: cat_output.stdout_lines
+    - name: Restart Wireguard Config
+      command: "wg-quick up {{ forward_interface }}"
+    - name: Create active mon Daemon
+      shell: 'echo -e "[Unit]\\nDescription=Node Exporter\\nAfter=network.target\\n\\n[Service]\\nUser=root\\nType=simple\\nExecStart=/usr/bin/python3 /home/ubuntu/aux_files/active_monitoring_api.py\\nStandardOutput=journal\\n\\n[Install]\\nWantedBy=multi-user.target" | sudo tee /etc/systemd/system/activemon_api.service'
+    - name: Create Active mon api Daemon
+      shell: 'echo -e "[Unit]\\nDescription=Node Exporter\\nAfter=network.target\\n\\n[Service]\\nUser=root\\nType=simple\\nExecStart=/usr/bin/python3 /home/ubuntu/aux_files/activemon_daemon.py\\nStandardOutput=journal\\n\\n[Install]\\nWantedBy=multi-user.target" | sudo tee /etc/systemd/system/activemon.service'
+    - name: Create 2PC Daemon
+      shell: |
+        echo -e "[Unit]\\nDescription=Node Exporter\\nAfter=network.target\\n\\n[Service]\\nEnvironment=\"DOMAIN={{ domain }}\"\\nEnvironment=\"VSI_ID={{ vsi_id}}\"\\nEnvironment=\"NETOR_IP={{ netor_ip}}\"\\nUser=root\\nType=simple\\nExecStart=/usr/bin/python3 /home/ubuntu/aux_files/core.py\\nStandardOutput=journal\\n\\n[Install]\\nWantedBy=multi-user.target" | sudo tee /etc/systemd/system/daemon2pc.service
+    - name: Enable daemons
+      shell: systemctl daemon-reload && systemctl enable activemon && systemctl enable activemon_api && systemctl enable daemon2pc
+    - name: Start API
+      shell: systemctl start activemon_api
+    - name: Start daemon
+      shell: systemctl start activemon
+    - name: Start daemon
+      shell: systemctl start daemon2pc
+    - name: Get prometheus exporter binary
+      get_url:
+        url: https://github.com/prometheus/node_exporter/releases/download/v1.5.0/node_exporter-1.5.0.linux-amd64.tar.gz
+        dest: /tmp/
+    - name: Decompress Prometheus Exporter Tar
+      unarchive:
+        src:  /tmp/node_exporter-1.5.0.linux-amd64.tar.gz
+        dest: /usr/local/bin/
+        remote_src: yes
+    - name: Rename Folder 
+      shell: mv /usr/local/bin/node_exporter-1.5.0.linux-amd64/node_exporter /usr/local/bin/
+    - name: Add node_exporter user
+      shell: useradd -rs /bin/false node_exporter || true
+    - name: Install node_exporter systemd unit file
+      shell: 'echo -e "[Unit]\\nDescription=Node Exporter\\nAfter=network.target\\n\\n[Service]\\nUser=node_exporter\\nGroup=node_exporter\\nType=simple\\nExecStart=/usr/local/bin/node_exporter\\n\\n[Install]\\nWantedBy=multi-user.target" | sudo tee /etc/systemd/system/node_exporter.service'
+    - name: Enable daemon
+      shell: systemctl daemon-reload && sudo systemctl enable node_exporter
+    - name: Start daemon
+      shell: service node_exporter start

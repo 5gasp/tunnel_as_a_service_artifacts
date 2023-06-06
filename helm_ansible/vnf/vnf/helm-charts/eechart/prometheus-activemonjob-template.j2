@@ -1,0 +1,20 @@
+- job_name: teste_{{ JOB_NAME }}
+  scrape_interval: 0s500ms
+  static_configs:
+  - targets:
+    - {{ EXPORTER_POD_IP }}:{{ EXPORTER_POD_PORT }}
+    labels:
+      ns_id: {{ NSR_ID }}
+      vnf_member_index: {{ VNF_MEMBER_INDEX }}
+      vdu_name: {{ VDUR_NAME }}
+      
+
+  metrics_path: /metrics
+  params:
+      module: [ monitor, custom_metric ]
+  relabel_configs:
+  - source_labels: ['__name__']
+    target_label: '__name__'
+    regex: '([^o][^s][^m]|^)(.*)'
+    replacement: 'osm_$2'
+    action: replace

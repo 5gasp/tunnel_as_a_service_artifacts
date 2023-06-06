@@ -1,0 +1,10 @@
+[Unit]
+Description=Active Monitoring API Systemd Service
+
+[Service]
+ExecStart=/usr/bin/python3 /home/ubuntu/aux_files/active_monitoring_api.py
+User=root
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

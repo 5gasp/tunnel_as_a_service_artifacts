@@ -1,0 +1,18 @@
+__pycache__
+/sandbox
+/build
+/dist
+/ops.egg-info
+.idea
+/docs/_build
+*~
+.venv
+venv
+.vscode
+.coverage
+/.tox
+
+# Smoke test artifacts
+*.tar.gz
+*.charm
+test/charms/test_smoke/requirements.txt

@@ -1,0 +1,26 @@
+# @Author: Daniel Gomes
+# @Date:   2023-02-02 15:20:05
+# @Last Modified by:   Daniel Gomes
+# @Last Modified time: 2023-02-16 15:34:01
+deployment:
+  name: monitor
+  image: atnog-harbor.av.it.pt/5gasp/monitor_nginx_ee@sha256
+  version: 938e6e4f236e70647c4329de0ff7c1944e71b3b26f278b3ba8743da5a262b0de
+  pull_policy: Always
+
+  grcp:
+    name: ansible-grpc
+    image: atnog-harbor.av.it.pt/5gasp/ansible-grpc@sha256
+    version: 56ffebb7e9040716007276616236eefafdb16505f20cc3e9740d26ed09fdb1f6
+    pull_policy: Always
+
+service:
+  container_port: 80
+  service_port: 80
+
+  grcp:
+    container_port: 8001
+    service_port: 50050
+
+nameOverride: ""
+fullnameOverride: ""

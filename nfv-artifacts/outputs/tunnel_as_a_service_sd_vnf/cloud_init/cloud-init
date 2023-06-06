@@ -1,0 +1,7 @@
+#cloud-config
+manage_etc_hosts: True
+hostname: osmtunnel
+password: osmtunnel
+chpasswd:
+  expire: False
+ssh_pwauth: True

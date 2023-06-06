@@ -1,0 +1,37 @@
+# -*- coding: utf-8 -*-
+# @Author: Rafael Direito
+# @Date:   2022-10-15 20:05:23
+# @Last Modified by:   Rafael Direito
+# @Last Modified time: 2022-10-19 16:03:47
+
+netslice-subnet:
+  - id: tunnel-as-a-service-sd-tunnel-peer
+    vld:
+    - name: mgmtnet
+      vnfd-connection-point-ref:
+      - member-vnf-index-ref: '1'
+        vnfd-connection-point-ref: 'tunnel-as-a-service-sd-eth0-ext'
+        ip-address: x.x.x.x
+    additionalParamsForVnf:
+      - member-vnf-index: '1'
+        additionalParams:
+          use_data_interfaces: 'true'
+          tunnel_id: 'wg1'
+          tunnel_peer_address: '10.100.100.1'
+          tunnel_address: '10.100.100.0/24'
+          ssh_username: 'ubuntu'
+          ssh_password: 'osmtunnel'
+          vsi_id: '1'
+          dns_ip: '53'
+          dns_port: '53'
+          dns_api_port: '9000'
+          dns_api_key: 'dummy_password'
+          dns_encryption_key: 'dummy_encryption_key'
+          dns_zone: 'vsi-1.netor.'
+          dns_total_num_peers: '2'
+          dns_service_type: 'wireguard'
+          dns_protocol: 'udp'
+          tunnel_public_address: '193.167.1.2'
+          tunnel_public_port: '9000'
+          tunnel_allowed_networks: '10.100.100.0/24,10.100.101.0/24'
+          max_waiting_time_for_other_peers_secs: '120'

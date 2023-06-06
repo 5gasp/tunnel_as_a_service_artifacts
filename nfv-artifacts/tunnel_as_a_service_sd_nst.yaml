@@ -1,0 +1,24 @@
+# -*- coding: utf-8 -*-
+# @Author: Rafael Direito
+# @Date:   2022-10-15 19:59:44
+# @Last Modified by:   Rafael Direito
+# @Last Modified time: 2022-10-15 20:04:54
+nst:
+-   id: tunnel-as-a-service-sd-nst
+    name: tunnel-as-a-service-sd-nst
+    SNSSAI-identifier:
+        slice-service-type: eMBB
+    quality-of-service:
+        id: 1
+
+    netslice-subnet:
+    -   id: tunnel-as-a-service-sd-tunnel-peer
+        is-shared-nss: false
+        description: NetSlice Subnet (service) composed by 1 vnf with 2 cp
+        nsd-ref: tunnel-as-a-service-sd-ns
+        # instantiation-parameters:
+        #     vld:
+        #     -   name: mgmtnet
+        #         vim-network-name: external
+        #     -   name: datanet
+        #         vim-network-name: test

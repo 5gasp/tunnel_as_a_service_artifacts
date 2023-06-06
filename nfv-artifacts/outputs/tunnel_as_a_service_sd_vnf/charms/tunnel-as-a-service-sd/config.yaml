@@ -1,0 +1,173 @@
+# @Author: Rafael Direito
+# @Date:   2022-07-18 14:21:37
+# @Last Modified by:   Daniel Gomes
+# @Last Modified time: 2022-11-16 16:19:32
+options:
+  ssh-hostname:
+    type: string
+    default: ""
+    description: "The hostname or IP address of the machine to"
+  ssh-username:
+    type: string
+    default: ""
+    description: "The username to login as."
+  ssh-password:
+    type: string
+    default: ""
+    description: "The password used to authenticate."
+  ssh-public-key:
+    type: string
+    default: ""
+    description: "The public key of this unit."
+  ssh-key-type:
+    type: string
+    default: "rsa"
+    description: "The type of encryption to use for the SSH key."
+  ssh-key-bits:
+    type: int
+    default: 4096
+    description: "The number of bits to use for the SSH key."
+
+
+  listen_port:
+    type: int
+    default: !!int "51820"
+    description: "UDP port to listen for peers on"
+
+  tunnel_address:
+    type: string
+    default: "10.100.100.0/24"
+    description: "Tunnel network"
+
+  tunnel_peer_address:
+    type: string
+    default: "10.100.100.1/24"
+    description: "Interface tunnel address"
+
+  forward_interface:
+    type: string
+    default: "wg0"
+    description: "Interface to forward packets on"
+
+  save_config:
+    type: boolean
+    default: !!bool "true"
+    description: "Configuration file should be saved on shutdown using the current status of the interface"
+
+  tunnel_id:
+    type: string
+    default: "1"
+    description: "Tunnel VNF ID"
+  vsi_id:
+    type: string
+    default: "1"
+    description: "Current VSI ID"
+  bandwidth:
+    type: string
+    default: "1000"
+    description: "Tunnel Bandwidth"
+  use_data_interfaces:
+    type: boolean
+    default: !!bool "true"
+    description: "Use Data Interfaces"
+  data_address:
+    type: string
+    default: "127.0.0.1/24"
+    description: "Interface tunnel address"
+  data_interface:
+    type: string
+    default: "error"
+    description: "Interface the tunnel will use"
+  domain:
+    type: string
+    default: "domain"
+    description: "Id of the domain"
+  
+  # wg_server:
+  #   type: boolean
+  #   default: !!bool "true"
+  #   description: "Specify if the charm should be configured as a server or client"
+  allowed-ips:
+    type: string
+    default: "127.0.0.1/24"
+    description: "Network/Mask information"
+  gw-address:
+    type: string
+    default: "127.0.0.1"
+    description: "Gateway address"
+  action:
+    type: string
+    default: "add"
+    description: "Action to execute with ip route"
+
+
+  # DNS_SD
+  netor_ip: 
+    type: string
+    default: "127.0.0.1"
+    description: "IP of the DNS Server"
+
+  dns_ip:
+    type: string
+    default: "127.0.0.1"
+    description: "IP of the DNS Server"
+
+  dns_port:
+    type: string
+    default: "53"
+    description: "Port of the DNS Server"
+
+  dns_api_port:
+    type: string
+    default: "9000"
+    description: "Port of the DNS Server API"
+
+  dns_api_key: 
+    type: string
+    default: "dummy_password"
+    description: "Password to access the DNS Server's API"
+
+  dns_encryption_key:
+    type: string
+    default: "8000"
+    description: "Key that the Peers will use to encrypt their private information. Only the other peers in the VS should be able to access this information."
+
+  dns_zone:
+    type: string
+    default: "vsi-0.netor."
+    description: "DNS Zone where the peers shall register themselves"
+
+  dns_total_num_peers:
+    type: string
+    default: "1"
+    description: "Number of peers of the VSI"
+
+  dns_service_type:
+    type: string
+    default: "wireguard"
+    description: "Service type to be used when the peer registers in the DNS-SD"
+
+  dns_protocol:
+    type: string
+    default: "udp"
+    description: "Service Protocol to be used when the peer registers in the DNS-SD"
+
+  tunnel_public_address:
+    type: string
+    default: "172.1.1.80"
+    description: "Peer's public IP address"
+
+  tunnel_public_port:
+    type: string
+    default: "51820"
+    description: "Peer's public port"
+
+  tunnel_allowed_networks:
+    type: string
+    default: "100.10.10.0/24, 100.10.11.0/24"
+    description: "Networks that should be forwarded trough this peer"
+
+  max_waiting_time_for_other_peers_secs:
+    type: string
+    default: "1200"
+    description: "Number of seconds the peer will wait for the other peers to register themselves"

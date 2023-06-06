@@ -1,0 +1,52 @@
+# @Author: Daniel Gomes
+# @Date:   2023-02-02 15:20:05
+# @Last Modified by:   Daniel Gomes
+# @Last Modified time: 2023-02-16 16:37:04
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  {{ include "eechart.fullname" . }}
+  labels:
+{{ include "eechart.labels" . | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "eechart.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "eechart.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Values.deployment.grcp.name }}
+        image: {{ .Values.deployment.grcp.image }}:{{ .Values.deployment.grcp.version }}
+        ports:
+          - containerPort: {{ .Values.service.grcp.container_port }}
+        imagePullPolicy: {{ .Values.deployment.grcp.pull_policy }}
+        volumeMounts:
+        - name: osm-ee
+          mountPath: /app/storage  
+        - name: osm-ee-source
+          mountPath: /app/EE/osm_ee/vnf
+      - name: {{ .Values.deployment.name }}
+        image: {{ .Values.deployment.image }}:{{ .Values.deployment.version }}
+        ports:
+          - containerPort: {{ .Values.service.container_port }}
+        volumeMounts:
+        - name: osm-ee
+          mountPath: /app/storage    
+
+      imagePullSecrets:
+        - name: harborkey
+      volumes:
+      - name: osm-ee-source
+        configMap: 
+          name:  {{ include "eechart.fullname" . }}
+      - name: osm-ee
+        emptyDir:
+          sizeLimit: 500Mi
+     
+     

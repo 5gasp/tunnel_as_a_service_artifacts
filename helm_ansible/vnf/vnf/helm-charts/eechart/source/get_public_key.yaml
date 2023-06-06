@@ -1,0 +1,14 @@
+- name: Get Wireguard Public key
+  hosts: all
+  become: true
+  vars: 
+    pub_key_path: /etc/wireguard/publickey
+  tasks:
+    - name: Retrieve file contents
+      slurp:
+        src: "{{pub_key_path}}"
+      register: file_contents
+
+    - name: Display file contents
+      debug:
+        msg: "{{ file_contents['content'] | b64decode }}"

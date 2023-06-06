@@ -1,0 +1,20 @@
+- name: Send POST request to HTTP API
+  hosts: all
+  become: true
+
+  vars:
+    api_url: "http://localhost:8080/start_2pc"
+    route_data: "{{ params.route-data }}"
+  tasks:
+    - name: Send POST request to API
+      uri:
+        url: "{{ api_url }}"
+        method: POST
+        body_format: json
+        body: "{{ route_data }}"
+        return_content: true
+      register: api_response
+
+    - name: Print API response
+      debug:
+        var: api_response.content
