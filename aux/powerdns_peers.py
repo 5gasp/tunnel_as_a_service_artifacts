@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# @Author: Rafael Direito
+# @Author: Daniel Gomes
 # @Date:   2022-08-16 19:04:59
-# @Last Modified by:   Rafael Direito
+# @Last Modified by:   Daniel Gomes
 # @Last Modified time: 2022-10-10 19:20:15
 
 import powerdns

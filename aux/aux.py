@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# @Author: Rafael Direito
+# @Author: Daniel Gomes
 # @Date:   2022-10-10 18:39:28
-# @Last Modified by:   Rafael Direito
+# @Last Modified by:   Daniel Gomes
 # @Last Modified time: 2022-10-10 18:42:44
 
 import configparser

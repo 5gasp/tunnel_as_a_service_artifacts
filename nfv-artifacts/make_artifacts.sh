@@ -1,6 +1,6 @@
-# @Author: Rafael Direito
+# @Author: Daniel Gomes
 # @Date:   2022-10-15 21:48:44
-# @Last Modified by:   Rafael Direito
+# @Last Modified by:   Daniel Gomes
 # @Last Modified time: 2022-10-15 22:00:01
 #!/bin/bash
 

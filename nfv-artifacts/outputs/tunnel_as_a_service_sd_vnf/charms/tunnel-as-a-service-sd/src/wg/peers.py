@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# @Author: Rafael Direito
+# @Author: Daniel Gomes
 # @Date:   2022-07-18 14:21:37
-# @Last Modified by:   Rafael Direito
+# @Last Modified by:   Daniel Gomes
 # @Last Modified time: 2022-10-19 16:59:30
 import wgconfig
 import os

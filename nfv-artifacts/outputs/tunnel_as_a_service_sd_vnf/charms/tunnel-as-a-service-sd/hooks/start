@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # -*- coding: utf-8 -*-
-# @Author: Rafael Direito
+# @Author: Daniel Gomes
 # @Date:   2022-10-15 19:59:44
 # @Last Modified by:   Daniel Gomes
 # @Last Modified time: 2022-11-16 18:03:56

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Author: Rafael Direito
+# @Author: Daniel Gomes
 # @Date:   2022-08-16 19:04:59
 # @Last Modified by:   Daniel Gomes
 # @Last Modified time: 2023-02-15 14:30:52

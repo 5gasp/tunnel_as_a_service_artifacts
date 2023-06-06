@@ -2,7 +2,7 @@
 # @Date:   2022-10-04 14:29:42
 # @Email:  dagomes@av.it.pt
 # @Copyright: Insituto de Telecomunicações - Aveiro, Aveiro, Portugal
-# @Last Modified by:   Rafael Direito
+# @Last Modified by:   Daniel Gomes
 # @Last Modified time: 2022-10-10 19:29:35
 
 from powerdns_netor import Netor_DNS_SD
